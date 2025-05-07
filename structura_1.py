@@ -78,9 +78,9 @@ elif section == "Llogaritësi i tarifave":
     st.header("💰 Llogarit Pagesën")
     st.markdown("Vendos të dhënat për të llogaritur pagesën e arkitektit.")
 
-    vështirësia = st.selectbox("Zgjidhni vështirësinë e punës:", ["lehtë", "mesatarë", "e vështirë"])
+    vështirësia = st.selectbox("Zgjidhni vështirësinë e punës:", ["e lehtë", "mesatare", "e vështirë"])
     madhesia_e_apartamentit = st.number_input("Vendosni madhësinë e apartamentit (në m²):", min_value=1)
-    projekti = st.selectbox("Zgjidhni projektin:", ["projekt i ri", "dizajn interieri"])
+    projekti = st.selectbox("Zgjidhni projektin:", ["projekt arkitektonik", "dizajn interieri"])
 
     if st.button("Llogarit"):
         tarifa_per_m2 = 500
