@@ -2,6 +2,7 @@ import streamlit as st
 import datetime
 import json
 import os
+import pandas as pd
 
 # Set up page config
 st.set_page_config(page_title="Structura", layout="wide")
@@ -167,12 +168,42 @@ elif section == "Klientë dhe arkitektë":
         for architect, client in matches.items():
             st.write(f"{architect} ↔ {client}")
 
+# Replace with your own published CSV URL
+sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOB4uubKZ9g9BBv2NCTcluURvS_mmqvyax5yL926N6qWrj3SeGEuyFCWI3lUGvyffxRWcUrSM5-2gd/pub?gid=661964427&single=true&output=csv"
+
+try:
+    data = pd.read_csv(sheet_url)
+
+    # Assume form has columns like: 'Emri', 'Roli', 'Preferencat'
+    clients = {}
+    architects = {}
+
+    for _, row in data.iterrows():
+        name = row['Emri']
+        role = row['Roli'].strip().lower()
+        prefs = [p.strip() for p in row['Preferencat'].split(',') if p.strip()]
+
+        if role == 'klient':
+            clients[name] = prefs
+        elif role == 'arkitekt':
+            architects[name] = prefs
+
+    # Now reuse stable_matching function
+    matches = stable_matching(clients, architects)
+
+    st.header("🔗 Përshtatja e regjistruar nga Formulari")
+    for architect, client in matches.items():
+        st.write(f"{architect} ↔ {client}")
+
+except Exception as e:
+    st.error("Nuk mund të lexoj të dhënat nga Google Sheets.")
+    st.exception(e)
+
 # 5. Regjistrohu!
 elif section == "Regjistrohu!":
     st.header("📝 Regjistrohu tani")
     st.markdown("Plotësoni formularin për t'u listuar si Arkitekt ose Klient.")
-    st.markdown("[Regjistrohu përmes Formularit të Google](https://forms.gle/your-form-link)")
-    st.caption("(Për lidhjen e fletës së Google, përdorni API ose përditësoni manualisht listën)")
+    st.markdown("[Regjistrohu përmes Formularit të Google](https://forms.gle/74xSDLR7o6kzr1cD6)")
 
 
 
