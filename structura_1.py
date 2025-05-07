@@ -1,12 +1,13 @@
-# Streamlit app for Structura
 import streamlit as st
 import datetime
 import json
 import os
 
+# Set up page config
 st.set_page_config(page_title="Structura", layout="wide")
 st.title("🏗️ Structura – AD CALEUM – DREJT QIEJVE")
 
+# Sidebar for navigation
 st.sidebar.header("📋 Shërbimet")
 section = st.sidebar.radio("Përdor:", [
     "Kalendari i punës", "Llogaritësi i tarifave", "Mjete arkitekture", "Klientë dhe arkitektë", "Regjistrohu!"])
@@ -103,7 +104,7 @@ elif section == "Llogaritësi i tarifave":
         st.success(f"📊 Kuota është **{int(pagesa):,} lekë**")
         st.success(f"📊 Kuota pas taksave është **{int(pagesa_me_takse):,} lekë**")
 
-# 3. Manual & Resources
+# 3. Mjete arkitekture
 elif section == "Mjete arkitekture":
     st.markdown("### Lidhje të dobishme:")
     st.link_button("Forumi Archinect", "https://www.archinect.com/forum")
@@ -119,7 +120,7 @@ elif section == "Mjete arkitekture":
     st.link_button("Hapësira dhe vëllimi", "https://www.instagram.com/p/C7MPI-lNk-D/?img_index=1&igsh=aW9jMzRjNmhmbjB0")
     st.link_button("Guggenheim, Bilbao", "https://www.guggenheim-bilbao.eus/en")
 
-# 4. Client-Architect Match (Gale-Shapley)
+# 4. Klientë dhe arkitektë (Gale-Shapley Matching)
 elif section == "Klientë dhe arkitektë":
     st.header("🔗 Shembull i Përshtatjes Klient-Arkitekt")
 
@@ -166,10 +167,12 @@ elif section == "Klientë dhe arkitektë":
         for architect, client in matches.items():
             st.write(f"{architect} ↔ {client}")
 
-# 5. Register Now
+# 5. Regjistrohu!
 elif section == "Regjistrohu!":
     st.header("📝 Regjistrohu tani")
     st.markdown("Plotësoni formularin për t'u listuar si Arkitekt ose Klient.")
     st.markdown("[Regjistrohu përmes Formularit të Google](https://forms.gle/your-form-link)")
     st.caption("(Për lidhjen e fletës së Google, përdorni API ose përditësoni manualisht listën)")
+
+
 
