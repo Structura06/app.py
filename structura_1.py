@@ -123,19 +123,7 @@ elif section == "Mjete arkitekture":
 
 # 4. Klientë dhe arkitektë (Gale-Shapley Matching)
 elif section == "Klientë dhe arkitektë":
-    st.header("🔗 Shembull i Përshtatjes Klient-Arkitekt")
-
-    clients = {
-        "Klienti A": ["Arkitekti X", "Arkitekti Y", "Arkitekti Z"],
-        "Klienti B": ["Arkitekti Y", "Arkitekti X", "Arkitekti Z"],
-        "Klienti C": ["Arkitekti X", "Arkitekti Z", "Arkitekti Y"]
-    }
-
-    architects = {
-        "Arkitekti X": ["Klienti B", "Klienti A", "Klienti C"],
-        "Arkitekti Y": ["Klienti A", "Klienti C", "Klienti B"],
-        "Arkitekti Z": ["Klienti C", "Klienti B", "Klienti A"]
-    }
+    st.header("🔗 Përshtatja Klient-Arkitekt nga Formulari")
 
     def stable_matching(clients, architects):
         free_clients = list(clients.keys())
@@ -163,41 +151,37 @@ elif section == "Klientë dhe arkitektë":
                             break
         return engagements
 
-    if st.button("Trego Përshtatjet"):
-        matches = stable_matching(clients, architects)
-        for architect, client in matches.items():
-            st.write(f"{architect} ↔ {client}")
+    # Replace with your own published CSV URL
+    sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOB4uubKZ9g9BBv2NCTcluURvS_mmqvyax5yL926N6qWrj3SeGEuyFCWI3lUGvyffxRWcUrSM5-2gd/pub?gid=661964427&single=true&output=csv"
 
-# Replace with your own published CSV URL
-sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOB4uubKZ9g9BBv2NCTcluURvS_mmqvyax5yL926N6qWrj3SeGEuyFCWI3lUGvyffxRWcUrSM5-2gd/pub?gid=661964427&single=true&output=csv"
+    try:
+        data = pd.read_csv(sheet_url)
 
-try:
-    data = pd.read_csv(sheet_url)
+        clients = {}
+        architects = {}
 
-    # Assume form has columns like: 'Emri', 'Roli', 'Preferencat'
-    clients = {}
-    architects = {}
+        for _, row in data.iterrows():
+            name = row['Emri']
+            role = row['Roli'].strip().lower()
+            prefs = [p.strip() for p in str(row['Preferencat']).split(',') if p.strip()]
 
-    for _, row in data.iterrows():
-        name = row['Emri']
-        role = row['Roli'].strip().lower()
-        prefs = [p.strip() for p in row['Preferencat'].split(',') if p.strip()]
+            if role == 'klient':
+                clients[name] = prefs
+            elif role == 'arkitekt':
+                architects[name] = prefs
 
-        if role == 'klient':
-            clients[name] = prefs
-        elif role == 'arkitekt':
-            architects[name] = prefs
+        if st.button("Trego Përshtatjet"):
+            if clients and architects:
+                matches = stable_matching(clients, architects)
+                st.success("Përshtatjet u gjeneruan me sukses!")
+                for architect, client in matches.items():
+                    st.write(f"{architect} ↔ {client}")
+            else:
+                st.warning("Nuk ka të dhëna të mjaftueshme nga formulari.")
 
-    # Now reuse stable_matching function
-    matches = stable_matching(clients, architects)
-
-    st.header("🔗 Përshtatja e regjistruar nga Formulari")
-    for architect, client in matches.items():
-        st.write(f"{architect} ↔ {client}")
-
-except Exception as e:
-    st.error("Nuk mund të lexoj të dhënat nga Google Sheets.")
-    st.exception(e)
+    except Exception as e:
+        st.error("Nuk mund të lexoj të dhënat nga Google Sheets.")
+        st.exception(e)
 
 # 5. Regjistrohu!
 elif section == "Regjistrohu!":
