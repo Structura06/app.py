@@ -85,14 +85,14 @@ elif section == "Llogaritësi i tarifave":
     if st.button("Llogarit"):
         tarifa_per_m2 = 500
 
-        if vështirësia == "lehtë":
+        if vështirësia == "e lehtë":
             shumezues_vështirësie = 2
-        elif vështirësia == "mesatarë":
+        elif vështirësia == "mesatare":
             shumezues_vështirësie = 3
         elif vështirësia == "e vështirë":
             shumezues_vështirësie = 4
 
-        if projekti == "projekt i ri":
+        if projekti == "projekt arkitektonik":
             shumezues_projekti = 2
         elif projekti == "dizajn interieri":
             shumezues_projekti = 1
