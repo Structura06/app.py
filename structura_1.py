@@ -19,61 +19,62 @@ if "edit_index" not in st.session_state:
     st.session_state["edit_index"] = None
 
 # 1. Kalendari i Punës (Work Calendar)
-st.header("📅 Kalendari i Punës")
-st.markdown("Shto ngjarjet dhe shiko afatet e projekteve që afrohesh.")
+if section == "Kalendari i punës":
+    st.header("📅 Kalendari i Punës")
+    st.markdown("Shto ngjarjet dhe shiko afatet e projekteve që afrohesh.")
 
-# Form for adding or editing events
-with st.form(key="event_form"):
-    if st.session_state["edit_index"] is None:
-        start_date = st.date_input("Data e Fillimit (DD/MM/YYYY)", datetime.date.today())
-        end_date = st.date_input("Data e Mbarimit (DD/MM/YYYY)", datetime.date.today())
-        desc = st.text_input("Përshkrimi i Ngjarjes")
-        submit = st.form_submit_button("Shto Ngjarjen")
-    else:
-        event = st.session_state["events"][st.session_state["edit_index"]]
-        start_date = st.date_input("Data e Fillimit (DD/MM/YYYY)", datetime.datetime.strptime(event["start"], "%Y-%m-%d").date())
-        end_date = st.date_input("Data e Mbarimit (DD/MM/YYYY)", datetime.datetime.strptime(event["end"], "%Y-%m-%d").date())
-        desc = st.text_input("Përshkrimi i Ngjarjes", event["desc"])
-        submit = st.form_submit_button("Përditëso")
-
-    if submit:
-        if start_date > end_date:
-            st.error("Data e fillimit duhet të jetë përpara datës së mbarimit.")
-        elif not desc:
-            st.warning("Ju lutem vendosni një përshkrim.")
+    # Form for adding or editing events
+    with st.form(key="event_form"):
+        if st.session_state["edit_index"] is None:
+            start_date = st.date_input("Data e Fillimit (DD/MM/YYYY)", datetime.date.today())
+            end_date = st.date_input("Data e Mbarimit (DD/MM/YYYY)", datetime.date.today())
+            desc = st.text_input("Përshkrimi i Ngjarjes")
+            submit = st.form_submit_button("Shto Ngjarjen")
         else:
-            new_event = {
-                "start": str(start_date),
-                "end": str(end_date),
-                "desc": desc
-            }
-            if st.session_state["edit_index"] is None:
-                st.session_state["events"].append(new_event)
-                st.success("Ngjarja u shtua!")
-            else:
-                st.session_state["events"][st.session_state["edit_index"]] = new_event
-                st.success("Ngjarja u përditësua!")
-                st.session_state["edit_index"] = None
+            event = st.session_state["events"][st.session_state["edit_index"]]
+            start_date = st.date_input("Data e Fillimit (DD/MM/YYYY)", datetime.datetime.strptime(event["start"], "%Y-%m-%d").date())
+            end_date = st.date_input("Data e Mbarimit (DD/MM/YYYY)", datetime.datetime.strptime(event["end"], "%Y-%m-%d").date())
+            desc = st.text_input("Përshkrimi i Ngjarjes", event["desc"])
+            submit = st.form_submit_button("Përditëso")
 
-# Display events
-st.markdown("### Ngjarjet e Ruajtura:")
-for i, event in enumerate(st.session_state["events"]):
-    start_fmt = datetime.datetime.strptime(event["start"], "%Y-%m-%d").strftime("%d/%m/%Y")
-    end_fmt = datetime.datetime.strptime(event["end"], "%Y-%m-%d").strftime("%d/%m/%Y")
-    col1, col2, col3 = st.columns([5, 1, 1])
-    with col1:
-        st.write(f"📌 {start_fmt} → {end_fmt}: {event['desc']}")
-    with col2:
-        if st.button("✏️", key=f"edit_{i}"):
-            st.session_state["edit_index"] = i
-    with col3:
-        if st.button("🗑️", key=f"delete_{i}"):
-            st.session_state["events"].pop(i)
-            st.success("Ngjarja u fshi!")
-            st.experimental_rerun()
+        if submit:
+            if start_date > end_date:
+                st.error("Data e fillimit duhet të jetë përpara datës së mbarimit.")
+            elif not desc:
+                st.warning("Ju lutem vendosni një përshkrim.")
+            else:
+                new_event = {
+                    "start": str(start_date),
+                    "end": str(end_date),
+                    "desc": desc
+                }
+                if st.session_state["edit_index"] is None:
+                    st.session_state["events"].append(new_event)
+                    st.success("Ngjarja u shtua!")
+                else:
+                    st.session_state["events"][st.session_state["edit_index"]] = new_event
+                    st.success("Ngjarja u përditësua!")
+                    st.session_state["edit_index"] = None
+
+    # Display events
+    st.markdown("### Ngjarjet e Ruajtura:")
+    for i, event in enumerate(st.session_state["events"]):
+        start_fmt = datetime.datetime.strptime(event["start"], "%Y-%m-%d").strftime("%d/%m/%Y")
+        end_fmt = datetime.datetime.strptime(event["end"], "%Y-%m-%d").strftime("%d/%m/%Y")
+        col1, col2, col3 = st.columns([5, 1, 1])
+        with col1:
+            st.write(f"📌 {start_fmt} → {end_fmt}: {event['desc']}")
+        with col2:
+            if st.button("✏️", key=f"edit_{i}"):
+                st.session_state["edit_index"] = i
+        with col3:
+            if st.button("🗑️", key=f"delete_{i}"):
+                st.session_state["events"].pop(i)
+                st.success("Ngjarja u fshi!")
+                st.experimental_rerun()
 
 # 2. Llogaritësi i tarifave
-if section == "Llogaritësi i tarifave":
+elif section == "Llogaritësi i tarifave":
     st.header("💰 Llogarit Pagesën")
     st.markdown("Vendos të dhënat për të llogaritur pagesën e arkitektit.")
 
