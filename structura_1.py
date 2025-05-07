@@ -22,11 +22,16 @@ def load_events():
     return []
 
 # Save events to file
-def save_event(date, desc):
+def save_event(start_date, end_date, desc):
     events = load_events()
-    events.append({"date": str(date), "desc": desc})
+    events.append({
+        "start": str(start_date),
+        "end": str(end_date),
+        "desc": desc
+    })
     with open(event_file, "w") as f:
         json.dump(events, f, indent=2)
+
 
 # 1. Calendar Interface
 if section == "Calendar":
@@ -37,17 +42,18 @@ if section == "Calendar":
     end_date = st.date_input("End Date", datetime.date.today())
     event_desc = st.text_input("Event Description")
 
-    if st.button("Add Event"):
-        if start_date > end_date:
-            st.error("Start date must be before end date.")
-        else:
-            save_event({"start": start_date.isoformat(), "end": end_date.isoformat()}, event_desc)
-            st.success(f"Added event from {start_date} to {end_date}: {event_desc}")
+if st.button("Add Event"):
+    if start_date > end_date:
+        st.error("Start date must be before end date.")
+    else:
+        save_event(start_date, end_date, event_desc)
+        st.success(f"Added event from {start_date} to {end_date}: {event_desc}")
+        
 
     st.markdown("### Saved Events:")
     events = load_events()
     for event in events:
-        st.write(f"📌 {event['date']['start']} → {event['date']['end']}: {event['desc']}")
+        st.write(f"📌 {event['start']} → {event['end']}: {event['desc']}")
 
 # 2. Tariff Calculator
 elif section == "Tariff Calculator":
