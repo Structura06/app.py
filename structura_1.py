@@ -11,29 +11,11 @@ st.sidebar.header("📋 Menu")
 section = st.sidebar.radio("Go to:", [
     "Calendar", "Tariff Calculator", "Manual & Resources", "Client-Architect Match", "Register Now"])
 
-# Path to event file
-event_file = "calendar_events.json"
+# Initialize session state for events
+if "events" not in st.session_state:
+    st.session_state["events"] = []
 
-# Load events from file
-def load_events():
-    if os.path.exists(event_file):
-        with open(event_file, "r") as f:
-            return json.load(f)
-    return []
-
-# Save events to file
-def save_event(start_date, end_date, desc):
-    events = load_events()
-    events.append({
-        "start": str(start_date),
-        "end": str(end_date),
-        "desc": desc
-    })
-    with open(event_file, "w") as f:
-        json.dump(events, f, indent=2)
-
-
-# 1. Calendar Interface
+# Calendar Section
 if section == "Calendar":
     st.header("📅 Work Calendar")
     st.markdown("Add your events and view upcoming project deadlines.")
@@ -42,17 +24,21 @@ if section == "Calendar":
     end_date = st.date_input("End Date", datetime.date.today())
     event_desc = st.text_input("Event Description")
 
-if st.button("Add Event"):
-    if start_date > end_date:
-        st.error("Start date must be before end date.")
-    else:
-        save_event(start_date, end_date, event_desc)
-        st.success(f"Added event from {start_date} to {end_date}: {event_desc}")
-        
+    if st.button("Add Event"):
+        if start_date > end_date:
+            st.error("Start date must be before end date.")
+        elif not event_desc:
+            st.warning("Please provide a description.")
+        else:
+            st.session_state["events"].append({
+                "start": str(start_date),
+                "end": str(end_date),
+                "desc": event_desc
+            })
+            st.success("Event added!")
 
     st.markdown("### Saved Events:")
-    events = load_events()
-    for event in events:
+    for i, event in enumerate(st.session_state["events"]):
         st.write(f"📌 {event['start']} → {event['end']}: {event['desc']}")
 
 # 2. Tariff Calculator
