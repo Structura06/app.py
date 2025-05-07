@@ -1,6 +1,8 @@
 # Streamlit app for Structura
 import streamlit as st
 import datetime
+import json
+import os
 
 st.set_page_config(page_title="Structura App", layout="wide")
 st.title("🏗️ Structura – Architecture Project Management")
@@ -9,17 +11,43 @@ st.sidebar.header("📋 Menu")
 section = st.sidebar.radio("Go to:", [
     "Calendar", "Tariff Calculator", "Manual & Resources", "Client-Architect Match", "Register Now"])
 
+# Path to event file
+event_file = "calendar_events.json"
+
+# Load events from file
+def load_events():
+    if os.path.exists(event_file):
+        with open(event_file, "r") as f:
+            return json.load(f)
+    return []
+
+# Save events to file
+def save_event(date, desc):
+    events = load_events()
+    events.append({"date": str(date), "desc": desc})
+    with open(event_file, "w") as f:
+        json.dump(events, f, indent=2)
+
 # 1. Calendar Interface
 if section == "Calendar":
     st.header("📅 Work Calendar")
     st.markdown("Add your events and view upcoming project deadlines.")
-    event_date = st.date_input("Select Date")
+
+    start_date = st.date_input("Start Date", datetime.date.today())
+    end_date = st.date_input("End Date", datetime.date.today())
     event_desc = st.text_input("Event Description")
+
     if st.button("Add Event"):
-        st.success(f"Added event on {event_date}: {event_desc}")
-    st.markdown("**Example Events:**")
-    st.write("- 2025-05-12: Site Visit")
-    st.write("- 2025-06-01: Draft Submission")
+        if start_date > end_date:
+            st.error("Start date must be before end date.")
+        else:
+            save_event({"start": start_date.isoformat(), "end": end_date.isoformat()}, event_desc)
+            st.success(f"Added event from {start_date} to {end_date}: {event_desc}")
+
+    st.markdown("### Saved Events:")
+    events = load_events()
+    for event in events:
+        st.write(f"📌 {event['date']['start']} → {event['date']['end']}: {event['desc']}")
 
 # 2. Tariff Calculator
 elif section == "Tariff Calculator":
@@ -96,3 +124,4 @@ elif section == "Register Now":
     st.write("- Client A")
     st.write("- Architect X")
     st.caption("(Connect your Google Sheet via API or manually update list)")
+
