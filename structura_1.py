@@ -100,7 +100,8 @@ elif section == "Llogaritësi i tarifave":
         pagesa = (madhesia_e_apartamentit * tarifa_per_m2) * shumezues_vështirësie * shumezues_projekti
         pagesa_me_takse = pagesa * (1 - 0.15)
 
-        st.success(f"📊 Pagesa totale që përfitoni është: **{int(pagesa_me_takse):,} lekë**")
+        st.success(f"📊 Kuota është: **{int(pagesa):,} lekë**")
+        st.success(f"📊 Kuota pas taksave është: **{int(pagesa_me_takse):,} lekë**")
 
 # 3. Manual & Resources
 elif section == "Mjete arkitekture":
