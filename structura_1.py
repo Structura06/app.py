@@ -100,19 +100,24 @@ elif section == "Llogaritësi i tarifave":
         pagesa = (madhesia_e_apartamentit * tarifa_per_m2) * shumezues_vështirësie * shumezues_projekti
         pagesa_me_takse = pagesa * (1 - 0.15)
 
-        st.success(f"📊 Kuota është: **{int(pagesa):,} lekë**")
-        st.success(f"📊 Kuota pas taksave është: **{int(pagesa_me_takse):,} lekë**")
+        st.success(f"📊 Kuota është **{int(pagesa):,} lekë**")
+        st.success(f"📊 Kuota pas taksave është **{int(pagesa_me_takse):,} lekë**")
 
 # 3. Manual & Resources
 elif section == "Mjete arkitekture":
-    st.header("📘 Manuali i Projektit & Burime")
     st.markdown("### Lidhje të dobishme:")
-    st.link_button("Forumi i Arkitekturës", "https://www.archinect.com/forum")
-    st.link_button("Frymëzim për Dizajn", "https://www.archdaily.com")
+    st.link_button("Forumi Archinect", "https://www.archinect.com/forum")
+    st.link_button("r/architecture", "https://www.reddit.com/r/architecture/")
+    st.link_button("Qiellgërvishtësja", "https://www.skyscrapercity.com/forums/architecture.4/")
 
-    st.markdown("### PDF të Projektit:")
-    st.link_button("📄 Shkarko Manualin e Projektit", "https://example.com/brief.pdf")
-    st.link_button("📄 Udhëzime Strukturore", "https://example.com/guidelines.pdf")
+    st.markdown("### Manuale përdorimi:")
+    st.link_button("📄 Ornamenti dhe krimi - Loos, Adolf", "https://www2.gwu.edu/~art/Temporary_SL/177/pdfs/Loos.pdf")
+    st.link_button("📄 Modernizmi, armiku ynë - van der Rohe, Mies", "https://newcriterion.com/article/is-modernism-the-enemy-the-case-of-mies-van-der-rohe/")
+
+    st.markdown("### Puna e arkitektëve nëpër botë:")
+    st.link_button("Studim i Pezo von Erlichshausen", "https://www.instagram.com/p/DIGX6dzt8Js/?igsh=MTRzYTlieGFvd2E0cw%3D%3D")
+    st.link_button("Hapësira dhe vëllimi", "https://www.instagram.com/p/C7MPI-lNk-D/?img_index=1&igsh=aW9jMzRjNmhmbjB0")
+    st.link_button("Guggenheim, Bilbao", "https://www.guggenheim-bilbao.eus/en")
 
 # 4. Client-Architect Match (Gale-Shapley)
 elif section == "Klientë dhe arkitektë":
@@ -166,8 +171,5 @@ elif section == "Regjistrohu!":
     st.header("📝 Regjistrohu tani")
     st.markdown("Plotësoni formularin për t'u listuar si Arkitekt ose Klient.")
     st.markdown("[Regjistrohu përmes Formularit të Google](https://forms.gle/your-form-link)")
-    st.markdown("### Përdorues të Regjistruar:")
-    st.write("- Klienti A")
-    st.write("- Arkitekti X")
     st.caption("(Për lidhjen e fletës së Google, përdorni API ose përditësoni manualisht listën)")
 
