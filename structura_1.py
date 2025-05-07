@@ -18,28 +18,29 @@ if "events" not in st.session_state:
 if "edit_index" not in st.session_state:
     st.session_state["edit_index"] = None
 
-st.header("📅 Work Calendar")
-st.markdown("Add your events and view upcoming project deadlines.")
+# 1. Kalendari i Punës (Work Calendar)
+st.header("📅 Kalendari i Punës")
+st.markdown("Shto ngjarjet dhe shiko afatet e projekteve që afrohesh.")
 
 # Form for adding or editing events
 with st.form(key="event_form"):
     if st.session_state["edit_index"] is None:
-        start_date = st.date_input("Start Date (DD/MM/YYYY)", datetime.date.today())
-        end_date = st.date_input("End Date (DD/MM/YYYY)", datetime.date.today())
-        desc = st.text_input("Event Description")
-        submit = st.form_submit_button("Add Event")
+        start_date = st.date_input("Data e Fillimit (DD/MM/YYYY)", datetime.date.today())
+        end_date = st.date_input("Data e Mbarimit (DD/MM/YYYY)", datetime.date.today())
+        desc = st.text_input("Përshkrimi i Ngjarjes")
+        submit = st.form_submit_button("Shto Ngjarjen")
     else:
         event = st.session_state["events"][st.session_state["edit_index"]]
-        start_date = st.date_input("Start Date (DD/MM/YYYY)", datetime.datetime.strptime(event["start"], "%Y-%m-%d").date())
-        end_date = st.date_input("End Date (DD/MM/YYYY)", datetime.datetime.strptime(event["end"], "%Y-%m-%d").date())
-        desc = st.text_input("Event Description", event["desc"])
-        submit = st.form_submit_button("Update Event")
+        start_date = st.date_input("Data e Fillimit (DD/MM/YYYY)", datetime.datetime.strptime(event["start"], "%Y-%m-%d").date())
+        end_date = st.date_input("Data e Mbarimit (DD/MM/YYYY)", datetime.datetime.strptime(event["end"], "%Y-%m-%d").date())
+        desc = st.text_input("Përshkrimi i Ngjarjes", event["desc"])
+        submit = st.form_submit_button("Përditëso")
 
     if submit:
         if start_date > end_date:
-            st.error("Start date must be before end date.")
+            st.error("Data e fillimit duhet të jetë përpara datës së mbarimit.")
         elif not desc:
-            st.warning("Please provide a description.")
+            st.warning("Ju lutem vendosni një përshkrim.")
         else:
             new_event = {
                 "start": str(start_date),
@@ -48,14 +49,14 @@ with st.form(key="event_form"):
             }
             if st.session_state["edit_index"] is None:
                 st.session_state["events"].append(new_event)
-                st.success("Event added!")
+                st.success("Ngjarja u shtua!")
             else:
                 st.session_state["events"][st.session_state["edit_index"]] = new_event
-                st.success("Event updated!")
+                st.success("Ngjarja u përditësua!")
                 st.session_state["edit_index"] = None
 
 # Display events
-st.markdown("### Saved Events:")
+st.markdown("### Ngjarjet e Ruajtura:")
 for i, event in enumerate(st.session_state["events"]):
     start_fmt = datetime.datetime.strptime(event["start"], "%Y-%m-%d").strftime("%d/%m/%Y")
     end_fmt = datetime.datetime.strptime(event["end"], "%Y-%m-%d").strftime("%d/%m/%Y")
@@ -68,9 +69,8 @@ for i, event in enumerate(st.session_state["events"]):
     with col3:
         if st.button("🗑️", key=f"delete_{i}"):
             st.session_state["events"].pop(i)
-            st.success("Event deleted!")
+            st.success("Ngjarja u fshi!")
             st.experimental_rerun()
-
 
 # 2. Llogaritësi i tarifave
 if section == "Llogaritësi i tarifave":
@@ -103,28 +103,29 @@ if section == "Llogaritësi i tarifave":
 
 # 3. Manual & Resources
 elif section == "Mjete arkitekture":
-    st.header("📘 Project Manual & Resources")
-    st.markdown("### Useful Links:")
-    st.markdown("- [Architecture Forum](https://www.archinect.com/forum)")
-    st.markdown("- [Design Inspiration](https://www.archdaily.com)")
-    st.markdown("### Project PDFs:")
-    st.write("[Download Project Brief](https://example.com/brief.pdf)")
-    st.write("[Structural Guidelines](https://example.com/guidelines.pdf)")
+    st.header("📘 Manuali i Projektit & Burime")
+    st.markdown("### Lidhje të dobishme:")
+    st.link_button("Forumi i Arkitekturës", "https://www.archinect.com/forum")
+    st.link_button("Frymëzim për Dizajn", "https://www.archdaily.com")
+
+    st.markdown("### PDF të Projektit:")
+    st.link_button("📄 Shkarko Manualin e Projektit", "https://example.com/brief.pdf")
+    st.link_button("📄 Udhëzime Strukturore", "https://example.com/guidelines.pdf")
 
 # 4. Client-Architect Match (Gale-Shapley)
 elif section == "Klientë dhe arkitektë":
-    st.header("🔗 Client-Architect Matching Example")
+    st.header("🔗 Shembull i Përshtatjes Klient-Arkitekt")
 
     clients = {
-        "Client A": ["Architect X", "Architect Y", "Architect Z"],
-        "Client B": ["Architect Y", "Architect X", "Architect Z"],
-        "Client C": ["Architect X", "Architect Z", "Architect Y"]
+        "Klienti A": ["Arkitekti X", "Arkitekti Y", "Arkitekti Z"],
+        "Klienti B": ["Arkitekti Y", "Arkitekti X", "Arkitekti Z"],
+        "Klienti C": ["Arkitekti X", "Arkitekti Z", "Arkitekti Y"]
     }
 
     architects = {
-        "Architect X": ["Client B", "Client A", "Client C"],
-        "Architect Y": ["Client A", "Client C", "Client B"],
-        "Architect Z": ["Client C", "Client B", "Client A"]
+        "Arkitekti X": ["Klienti B", "Klienti A", "Klienti C"],
+        "Arkitekti Y": ["Klienti A", "Klienti C", "Klienti B"],
+        "Arkitekti Z": ["Klienti C", "Klienti B", "Klienti A"]
     }
 
     def stable_matching(clients, architects):
@@ -153,18 +154,18 @@ elif section == "Klientë dhe arkitektë":
                             break
         return engagements
 
-    if st.button("Show Matches"):
+    if st.button("Trego Përshtatjet"):
         matches = stable_matching(clients, architects)
         for architect, client in matches.items():
             st.write(f"{architect} ↔ {client}")
 
 # 5. Register Now
 elif section == "Regjistrohu!":
-    st.header("📝 Register Now")
-    st.markdown("Fill the form to be listed as an Architect or Client.")
-    st.markdown("[Register via Google Form](https://forms.gle/your-form-link)")
-    st.markdown("### Registered Users:")
-    st.write("- Client A")
-    st.write("- Architect X")
-    st.caption("(Connect your Google Sheet via API or manually update list)")
+    st.header("📝 Regjistrohu tani")
+    st.markdown("Plotësoni formularin për t'u listuar si Arkitekt ose Klient.")
+    st.markdown("[Regjistrohu përmes Formularit të Google](https://forms.gle/your-form-link)")
+    st.markdown("### Përdorues të Regjistruar:")
+    st.write("- Klienti A")
+    st.write("- Arkitekti X")
+    st.caption("(Për lidhjen e fletës së Google, përdorni API ose përditësoni manualisht listën)")
 
