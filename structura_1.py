@@ -121,66 +121,58 @@ elif section == "Mjete arkitekture":
     st.link_button("Hapësira dhe vëllimi", "https://www.instagram.com/p/C7MPI-lNk-D/?img_index=1&igsh=aW9jMzRjNmhmbjB0")
     st.link_button("Guggenheim, Bilbao", "https://www.guggenheim-bilbao.eus/en")
 
-# 4. Klientë dhe arkitektë (Gale-Shapley Matching)
+# 4. Klientë dhe arkitektë (First-Come, First-Serve Matching)
 elif section == "Klientë dhe arkitektë":
-    st.header("🔗 Përshtatja Klient-Arkitekt nga Formulari")
+    st.header("🔗 Përshtatja Klient–Arkitekt (First-Come, First-Serve)")
 
-    def stable_matching(clients, architects):
-        free_clients = list(clients.keys())
-        engagements = {}
-        client_proposals = {client: [] for client in clients}
-
-        while free_clients:
-            client = free_clients[0]
-            client_prefs = clients[client]
-
-            for architect in client_prefs:
-                if architect not in client_proposals[client]:
-                    client_proposals[client].append(architect)
-
-                    if architect not in engagements:
-                        engagements[architect] = client
-                        free_clients.pop(0)
-                        break
-                    else:
-                        current = engagements[architect]
-                        if architects[architect].index(client) < architects[architect].index(current):
-                            engagements[architect] = client
-                            free_clients.pop(0)
-                            free_clients.append(current)
-                            break
-        return engagements
-
-    # Replace with your own published CSV URL
     sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOB4uubKZ9g9BBv2NCTcluURvS_mmqvyax5yL926N6qWrj3SeGEuyFCWI3lUGvyffxRWcUrSM5-2gd/pub?gid=661964427&single=true&output=csv"
 
     try:
         data = pd.read_csv(sheet_url)
 
-        clients = {}
-        architects = {}
+        # Check required columns
+        required_columns = {"Emri dhe mbiemri", "Sektori"}
+        if not required_columns.issubset(set(data.columns)):
+            st.error("Të dhënat në Google Sheet nuk kanë kolonat e kërkuara: 'Emri dhe mbiemri' dhe 'Sektori'.")
+        else:
+            # Normalize
+            data["Sektori"] = data["Sektori"].str.strip().str.lower()
 
-        for _, row in data.iterrows():
-            name = row['Emri']
-            role = row['Roli'].strip().lower()
-            prefs = [p.strip() for p in str(row['Preferencat']).split(',') if p.strip()]
+            # Separate clients and architects by order of submission
+            clients = data[data["Sektori"] == "klient"].reset_index(drop=True)
+            architects = data[data["Sektori"] == "arkitekt"].reset_index(drop=True)
 
-            if role == 'klient':
-                clients[name] = prefs
-            elif role == 'arkitekt':
-                architects[name] = prefs
+            # Perform FCFS matching
+            min_len = min(len(clients), len(architects))
+            matches = []
 
-        if st.button("Trego Përshtatjet"):
-            if clients and architects:
-                matches = stable_matching(clients, architects)
-                st.success("Përshtatjet u gjeneruan me sukses!")
-                for architect, client in matches.items():
-                    st.write(f"{architect} ↔ {client}")
+            for i in range(min_len):
+                matches.append({
+                    "Klient": clients.loc[i, "Emri dhe mbiemri"],
+                    "Arkitekt": architects.loc[i, "Emri dhe mbiemri"]
+                })
+
+            # Display matches
+            st.subheader("🧩 Përshtatjet")
+            if matches:
+                for pair in matches:
+                    st.write(f"{pair['Klient']} ↔ {pair['Arkitekt']}")
             else:
-                st.warning("Nuk ka të dhëna të mjaftueshme nga formulari.")
+                st.info("Nuk ka të dhëna të mjaftueshme për të bërë përshtatje.")
+
+            # Optional: show unpaired entries
+            if len(clients) > len(architects):
+                st.subheader("👤 Klientë pa arkitekt:")
+                for name in clients["Emri dhe mbiemri"].iloc[min_len:]:
+                    st.write(name)
+
+            elif len(architects) > len(clients):
+                st.subheader("👷 Arkitektë pa klient:")
+                for name in architects["Emri dhe mbiemri"].iloc[min_len:]:
+                    st.write(name)
 
     except Exception as e:
-        st.error("Nuk mund të lexoj të dhënat nga Google Sheets.")
+        st.error("❌ Nuk mund të lexoj të dhënat nga Google Sheets.")
         st.exception(e)
 
 # 5. Regjistrohu!
