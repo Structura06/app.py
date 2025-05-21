@@ -155,7 +155,7 @@ elif section == "Klientë dhe arkitektë":
                 st.info("Asnjë arkitekt nuk është regjistruar.")
 
             # FCFS Matching
-            st.subheader("🧩 Përshtatjet (First-Come, First-Serve)")
+            st.subheader("🧩 Përshtatjet")
             min_len = min(len(clients), len(architects))
             matches = []
 
