@@ -23,13 +23,13 @@ if "edit_index" not in st.session_state:
 # 1. Kalendari i Punës (Work Calendar)
 if section == "Kalendari i punës":
     st.header("📅 Kalendari i Punës")
-    st.markdown("Shto ngjarjet dhe shiko afatet e projekteve që afrohesh.")
+    st.markdown("Takim pune? Afate të ngjeshura? Përdorni Kalendarin tonë të Punës!")
 
     # Form for adding or editing events
     with st.form(key="event_form"):
         if st.session_state["edit_index"] is None:
-            start_date = st.date_input("Data e Fillimit (DD/MM/YYYY)", datetime.date.today())
-            end_date = st.date_input("Data e Mbarimit (DD/MM/YYYY)", datetime.date.today())
+            start_date = st.date_input("Data e Fillimit (Ditë/Muaj/Vit)", datetime.date.today())
+            end_date = st.date_input("Data e Mbarimit (Ditë/Muaj/Vit)", datetime.date.today())
             desc = st.text_input("Përshkrimi i Ngjarjes")
             submit = st.form_submit_button("Shto Ngjarjen")
         else:
@@ -77,7 +77,7 @@ if section == "Kalendari i punës":
 
 # 2. Llogaritësi i tarifave
 elif section == "Llogaritësi i tarifave":
-    st.header("💰 Llogarit Pagesën")
+    st.header("💰 Llogarit Tarifën")
     st.markdown("Vendos të dhënat për të llogaritur pagesën e arkitektit.")
 
     vështirësia = st.selectbox("Zgjidhni vështirësinë e punës:", ["e lehtë", "mesatare", "e vështirë"])
@@ -123,7 +123,7 @@ elif section == "Mjete arkitekture":
 
 # 4. Klientë dhe arkitektë (First-Come, First-Serve Matching)
 elif section == "Klientë dhe arkitektë":
-    st.header("🔗 Përshtatja Klient–Arkitekt (First-Come, First-Serve)")
+    st.header("🔗 Përshtatja Klient–Arkitekt")
 
     sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQOB4uubKZ9g9BBv2NCTcluURvS_mmqvyax5yL926N6qWrj3SeGEuyFCWI3lUGvyffxRWcUrSM5-2gd/pub?gid=661964427&single=true&output=csv"
 
